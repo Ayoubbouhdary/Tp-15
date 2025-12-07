@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GraphiQL - Banque Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/3.0.2/graphiql.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/3.0.2/graphiql.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        #graphiql { height: 100vh; }
+    </style>
+</head>
+<body>
+<div id="graphiql">Loading GraphiQL...</div>
+
+<script>
+    const graphQLFetcher = async (graphQLParams) => {
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(graphQLParams),
+        });
+        return response.json();
+    };
+
+    ReactDOM.render(
+        React.createElement(GraphiQL, {
+            fetcher: graphQLFetcher,
+            defaultQuery: `# Bienvenue dans l'API GraphQL Banque Service
+# Essayez ces requêtes :
+
+# 1. Créer un compte
+mutation {
+saveCompte(compte: {
+solde: 1000.0,
+dateCreation: "2024-12-07",
+type: COURANT
+}) {
+id
+solde
+type
+}
+}
+
+# 2. Voir tous les comptes
+query {
+allComptes {
+id
+solde
+type
+dateCreation
+}
+}
+
+# 3. Statistiques
+query {
+totalSolde {
+count
+sum
+average
+}
+}`
+        }),
+        document.getElementById('graphiql')
+    );
+</script>
+</body>
+</html>
